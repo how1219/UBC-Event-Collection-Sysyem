@@ -1,0 +1,21 @@
+{
+  "name": "project_f9c5y_i4d2r_y5m8g",
+  "version": "1.0.0",
+  "description": "The UBC Event Collection Application is designed to gather the comprehensive information of an event in the UBC community. It aims to simplify the process of tracking the event-related data. To achieve the goals mentioned above, the database will include the following entities: Event, Organizer, Staff, Location, Photo, Participant, Feedback, Sponsor. Each of these entities has crucial information regarding the event, thus ensuring that the application effectively collects and stores all the essential data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.students.cs.ubc.ca/CPSC304-2023W-T1/project_f9c5y_i4d2r_y5m8g.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "oracledb": "^6.2.0"
+  }
+}

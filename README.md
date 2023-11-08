@@ -17,4 +17,4 @@ Users of the Event Collection database will have various capabilities and action
 The project will utilize the **Oracle database**, which is provided by the department, as the foundational database management system. It will be built using a technology stack that includes **JavaScript** with **React** for the frontend and **Node.js** for the backend. On the frontend, React will enable the creation of interactive and responsive user interfaces. For the backend, Node.js will serve as the server-side runtime. Additionally, Express.js, a web application framework for Node.js, will simplify the process of building APIs and handling HTTP requests. 
 
 ## 4. ER Diagram
-![img.png](ERD.png)
+![img.png](Milestone Documents/ERD.png)
