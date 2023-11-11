@@ -1,6 +1,7 @@
 const express = require('express');
 const setupDatabase = require('./server/dbsetup');
-const eventsRoutes = require('./server/routes/eventsRoutes');
+const eventRoutes = require('./server/routes/eventRoutes');
+const organizerRoutes = require('./server/routes/organizerRoutes');
 
 // Load environment variables from .env file
 // Ensure your .env file has the required database credentials.
@@ -15,7 +16,8 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // mount the router
-app.use('/', eventsRoutes);
+app.use('/', eventRoutes);
+app.use('/', organizerRoutes);
 
 // ----------------------------------------------------------
 // setup the database schema and start the server

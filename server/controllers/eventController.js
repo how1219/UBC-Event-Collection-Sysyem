@@ -1,4 +1,4 @@
-const EventsModel = require('../models/eventsModel');
+const EventsModel = require('../models/eventModel');
 
 async function getAllEvents(req, res) {
     try {
@@ -14,7 +14,7 @@ async function addEventController(req, res) {
   const eventDetails = req.body;
   const result = await EventsModel.addEvent(eventDetails);
   if (result.success) {
-    res.status(201).json(result.result);
+     res.status(201).json({message: 'Event created successfully.'});
   } else {
     res.status(500).json(result.error);
   }

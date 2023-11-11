@@ -1,7 +1,6 @@
 const oracledb = require('oracledb');
 const dbConfig = require('./dbConfig');
 
-console.log(dbConfig);
 
 // ----------------------------------------------------------
 // Wrapper to manage OracleDB actions, simplifying connection handling.
@@ -62,6 +61,7 @@ async function addEvent(eventDetails) {
   }
 }
 
+// For EventDate, using "YYYY-MM-DD HH24:MI:SS" format
 async function updateEvent(eventID, updateFields) {
     try {
         return await withOracleDB(async (connection) => {
