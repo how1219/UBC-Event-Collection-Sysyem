@@ -1,4 +1,6 @@
 const express = require('express');
+const setupDatabase = require('./server/dbsetup');
+const eventsRoutes = require('./server/routes/eventsRoutes');
 
 // Load environment variables from .env file
 // Ensure your .env file has the required database credentials.
@@ -12,9 +14,20 @@ const PORT = envVariables.PORT || 65534;
 app.use(express.static('public'));
 app.use(express.json());
 
+// mount the router
+app.use('/', eventsRoutes);
 
 // ----------------------------------------------------------
-// Starting the server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`);
-});
+// setup the database schema and start the server
+setupDatabase()
+  .then(() => {
+    // Start the server only after the database setup is completed
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}/`);
+    });
+  })
+  .catch(error => {
+    console.error('Error setting up the database:', error);
+    process.exit(1);
+  });
+

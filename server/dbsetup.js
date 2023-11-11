@@ -36,48 +36,48 @@ async function setupDatabase() {
             FOREIGN KEY (OrganizerID) REFERENCES ORGANIZER(OrganizerID)
         )`
       },
-//       {
-//         tableName: 'TEAM_MEMBER',
-//         createQuery: `CREATE TABLE TEAM_MEMBER (
-//             MemberName VARCHAR,
-//             MemberPhoneNo CHAR(10),
-//             OrganizerID INTEGER,
-//             StaffEmail VARCHAR(255),
-//             PayRate INTEGER,
-//             PRIMARY KEY (MemberName, MemberPhoneNo),
-//             FOREIGN KEY (OrganizerID) REFERENCES ORGANIZER (OrganizerID)
-//         )`
-//       },
-//       {
-//         tableName: 'SPEAKER',
-//         createQuery: `CREATE TABLE SPEAKER (
-//             MemberName VARCHAR(255),
-//             MemberPhoneNo CHAR(10),
-//             ExperienceLevel VARCHAR(255),
-//             PRIMARY KEY (MemberName, MemberPhoneNo),
-//             FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
-//         )`
-//       },
-//       {
-//         tableName: 'PHOTOGRAPHER',
-//         createQuery: `CREATE TABLE PHOTOGRAPHER (
-//             MemberName VARCHAR(255),
-//             MemberPhoneNo CHAR(10),
-//             Equipment VARCHAR(255),
-//             PRIMARY KEY (MemberName, MemberPhoneNo),
-//             FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
-//         )`
-//       },
-//       {
-//         tableName: 'VOLUNTEER',
-//         createQuery: `CREATE TABLE VOLUNTEER (
-//             MemberName VARCHAR(255),
-//             MemberPhoneNo CHAR(10),
-//             Skill VARCHAR(255),
-//             PRIMARY KEY (MemberName, MemberPhoneNo),
-//             FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
-//         )`
-//       },
+      {
+        tableName: 'TEAM_MEMBER',
+        createQuery: `CREATE TABLE TEAM_MEMBER (
+            MemberName VARCHAR(255),
+            MemberPhoneNo CHAR(10),
+            OrganizerID INTEGER,
+            StaffEmail VARCHAR(255),
+            PayRate INTEGER,
+            PRIMARY KEY (MemberName, MemberPhoneNo),
+            FOREIGN KEY (OrganizerID) REFERENCES ORGANIZER (OrganizerID)
+        )`
+      },
+      {
+        tableName: 'SPEAKER',
+        createQuery: `CREATE TABLE SPEAKER (
+            MemberName VARCHAR(255),
+            MemberPhoneNo CHAR(10),
+            ExperienceLevel VARCHAR(255),
+            PRIMARY KEY (MemberName, MemberPhoneNo),
+            FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
+        )`
+      },
+      {
+        tableName: 'PHOTOGRAPHER',
+        createQuery: `CREATE TABLE PHOTOGRAPHER (
+            MemberName VARCHAR(255),
+            MemberPhoneNo CHAR(10),
+            Equipment VARCHAR(255),
+            PRIMARY KEY (MemberName, MemberPhoneNo),
+            FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
+        )`
+      },
+      {
+        tableName: 'VOLUNTEER',
+        createQuery: `CREATE TABLE VOLUNTEER (
+            MemberName VARCHAR(255),
+            MemberPhoneNo CHAR(10),
+            Skill VARCHAR(255),
+            PRIMARY KEY (MemberName, MemberPhoneNo),
+            FOREIGN KEY (MemberName, MemberPhoneNo) REFERENCES TEAM_MEMBER(MemberName, MemberPhoneNo)
+        )`
+      },
       {
         tableName: 'SPONSOR',
         createQuery: `CREATE TABLE SPONSOR (
@@ -100,15 +100,16 @@ async function setupDatabase() {
               FOREIGN KEY (SponsorName, SponsorPhoneNo) REFERENCES SPONSOR(SponsorName, SponsorPhoneNo)
         )`
       },
-//       {
-//         tableName: 'FEEDBACK',
-//         createQuery: `CREATE TABLE FEEDBACK (
-//                FeedbackID INTEGER PRIMARY KEY,
-//                EventID INTEGER,
-//                Comment VARCHAR(255),
-//                FOREIGN KEY (EventID) REFERENCES EVENT(EventID)
-//         )`
-//       },
+      {
+        tableName: 'FEEDBACK',
+        createQuery: `CREATE TABLE FEEDBACK (
+               FeedbackID INTEGER PRIMARY KEY,
+               EventID INTEGER,
+               Rating INTEGER,
+               Feedback VARCHAR(255),
+               FOREIGN KEY (EventID) REFERENCES EVENT(EventID)
+        )`
+      },
       {
         tableName: 'EVENT_PHOTO',
         createQuery: `CREATE TABLE EVENT_PHOTO (
