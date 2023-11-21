@@ -1,0 +1,1 @@
+const EventsModel = require('../models/sponsorModel');
