@@ -76,7 +76,7 @@ async function updatePhoto(photoID, updateFields) {
 async function deletePhoto(photoID) {
     try {
         return await withOracleDB(async (connection) => {
-            const sqlQuery = 'DELETE FROM ORGANIZER WHERE PhotoID = :photoID';
+            const sqlQuery = 'DELETE FROM EVENT_PHOTO WHERE PhotoID = :photoID';
             const result = await connection.execute(sqlQuery, [photoID], { autoCommit: true });
             return result;
         });
