@@ -12,7 +12,7 @@ async function getAllPhotos(req, res) {
 
 async function addPhotoController(req, res) {
     const photoDetails = req.body;
-    const result = await EventsModel.addEvent(photoDetails);
+    const result = await EventsModel.addPhoto(photoDetails);
     if (result.success) {
         res.status(201).json({message: 'Photo created successfully.'});
     } else {
@@ -23,7 +23,7 @@ async function addPhotoController(req, res) {
 async function updatePhotoController(req, res) {
     const photoID = req.params.id;
     const updateFields = req.body;
-    const result = await PhotoModel.updateEvent(photoID, updateFields);
+    const result = await PhotoModel.updatePhoto(photoID, updateFields);
     console.log(result);
     if (result.rowsAffected > 0) {
         res.status(201).json({message: 'Photo updated successfully.'});
