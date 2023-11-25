@@ -23,7 +23,7 @@ async function addParticipantController(req, res) {
 async function updateParticipantController(req, res) {
     const participantID = req.params.id;
     const updateFields = req.body;
-    const result = await ParticipantModel.updateEvent(participantID, updateFields);
+    const result = await ParticipantModel.updateParticipant(participantID, updateFields);
     console.log(result);
     if (result.rowsAffected > 0) {
         res.status(201).json({message: 'Participant updated successfully.'});
@@ -34,7 +34,7 @@ async function updateParticipantController(req, res) {
 
 async function deleteParticipantController(req, res) {
     const participantID = req.params.id;
-    const result = await ParticipantModel.deleteEvent(participantID);
+    const result = await ParticipantModel.deleteParticipant(participantID);
     console.log(result);
     if (result.rowsAffected > 0) {
         res.status(201).json({message: 'Participant deleted successfully.'});
