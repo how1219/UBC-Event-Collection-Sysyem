@@ -11,38 +11,55 @@ async function getAllFeedBacks(req, res) {
 }
 
 async function addFeedBackController(req, res) {
-    const feedBackDetails = req.body;
-    const result = await FeedBackModel.addFeedBack(feedBackDetails);
-    if (result.success) {
-        res.status(201).json({message: 'Feedback created successfully.'});
-    } else {
-        res.status(500).json(result.error);
+    try {
+        const feedBackDetails = req.body;
+        const result = await FeedBackModel.addFeedBack(feedBackDetails);
+        if (result.success) {
+            res.status(201).json({message: 'Feedback created successfully.'});
+        } else {
+            res.status(500).json(result.error);
+        }
+    } catch (error) {
+        console.error('Error in addFeedBackController:', error);
+        res.status(500).json({ error: error.message });
     }
 }
 
 async function updateFeedBackController(req, res) {
-    const feedBackID = req.params.id;
-    const updateFields = req.body;
-    const result = await FeedBackModel.updateFeedBack(feedBackID, updateFields);
-    console.log(result);
-    if (result.rowsAffected > 0) {
-        res.status(201).json({message: 'Feedback updated successfully.'});
-    } else {
-        res.status(500).json(result.error);
+    try {
+        const feedBackID = req.params.id;
+        const updateFields = req.body;
+        const result = await FeedBackModel.updateFeedBack(feedBackID, updateFields);
+        console.log(result);
+        if (result.rowsAffected > 0) {
+            res.status(201).json({message: 'Feedback updated successfully.'});
+        } else {
+            res.status(500).json(result.error);
+        }
+    } catch (error) {
+        console.error('Error in updateFeedBackController:', error);
+        res.status(500).json({ error: error.message });
     }
+
 }
 
 async function deleteFeedBackController(req, res) {
-    const feedBackID = req.params.id;
-    const result = await FeedBackModel.deleteFeedBack(feedBackID);
-    console.log(result);
-    if (result.rowsAffected > 0) {
-        res.status(201).json({message: 'Feedback deleted successfully.'});
-    } else {
-        res.status(500).json(result.error);
+    try {
+        const feedBackID = req.params.id;
+        const result = await FeedBackModel.deleteFeedBack(feedBackID);
+        console.log(result);
+        if (result.rowsAffected > 0) {
+            res.status(201).json({message: 'Feedback deleted successfully.'});
+        } else {
+            res.status(500).json(result.error);
+        }
+    } catch (error) {
+        console.error('Error in deleteFeedBackController:', error);
+        res.status(500).json({ error: error.message });
     }
+
 }
 
-module.exports = { getAllFeedBacks, addFeedBackController, updateFeedBackController, deleteFeedBackController};
+module.exports = {getAllFeedBacks, addFeedBackController, updateFeedBackController, deleteFeedBackController};
 
 
