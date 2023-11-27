@@ -44,8 +44,8 @@ async function withOracleDB(action) {
             const result = await withOracleDB(async (connection) => {
                 const { SponsorName, SponsorPhoneNo, SponsorEmail } = sponsorDetails;
                 const result = await connection.execute(
-                    `INSERT INTO TEAM_MEMBER (SponsorName, SponsorPhoneNo, SponsorEmail)
-         VALUES (:SponsorName, :SponsorPhoneNo, :SponsorEmail)`,
+                    `INSERT INTO SPONSOR (SponsorName, SponsorPhoneNo, SponsorEmail)
+         VALUES (:SponsorName,:SponsorPhoneNo,:SponsorEmail)`,
                     [SponsorName, SponsorPhoneNo, SponsorEmail],
                     { autoCommit: true }
                 );
@@ -63,7 +63,7 @@ async function withOracleDB(action) {
         try {
             return await withOracleDB(async (connection) => {
                 const setClauses = Object.keys(updateFields).map((key) => `${key} = :${key}`);
-                const sqlQuery = `UPDATE SPONSOR SET ${setClauses.join(', ')} WHERE SponsorName = :sponsorName AND sponsorPhoneNo = :sponsorPhoneNo`;
+                const sqlQuery = `UPDATE SPONSOR SET ${setClauses.join(', ')} WHERE SponsorName = :sponsorName AND SponsorPhoneNo = :sponsorPhoneNo`;
                 const bindParams = { ...updateFields, SponsorName: sponsorName, sponsorPhoneNo: sponsorPhoneNo };
                 const result = await connection.execute(sqlQuery, bindParams, { autoCommit: true });
 

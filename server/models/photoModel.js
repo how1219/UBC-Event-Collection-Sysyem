@@ -43,7 +43,7 @@ async function addPhoto(photoDetails) {
         const result = await withOracleDB(async (connection) => {
             const { PhotoID, EventID, Description } = photoDetails;
             const result = await connection.execute(
-                `INSERT INTO ORGANIZER (PhotoID, EventID, Description)
+                `INSERT INTO EVENT_PHOTO (PhotoID, EventID, Description)
          VALUES (:PhotoID, :EventID, :Description)`,
                 [PhotoID, EventID, Description],
                 { autoCommit: true }

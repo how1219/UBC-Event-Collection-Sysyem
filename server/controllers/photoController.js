@@ -12,7 +12,7 @@ async function getAllPhotos(req, res) {
 
 async function addPhotoController(req, res) {
     const photoDetails = req.body;
-    const result = await EventsModel.addPhoto(photoDetails);
+    const result = await PhotoModel.addPhoto(photoDetails);
     if (result.success) {
         res.status(201).json({message: 'Photo created successfully.'});
     } else {

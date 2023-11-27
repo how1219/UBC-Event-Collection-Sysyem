@@ -43,7 +43,7 @@ async function addParticipant(participantDetails) {
         const result = await withOracleDB(async (connection) => {
             const { ParticipantID, ParticipantName, ParticipantEmail } = participantDetails;
             const result = await connection.execute(
-                `INSERT INTO ORGANIZER (ParticipantID, ParticipantName, ParticipantEmail)
+                `INSERT INTO PARTICIPANT (ParticipantID, ParticipantName, ParticipantEmail)
          VALUES (:ParticipantID, :ParticipantName, :ParticipantEmail)`,
                 [ParticipantID, ParticipantName, ParticipantEmail],
                 { autoCommit: true }
