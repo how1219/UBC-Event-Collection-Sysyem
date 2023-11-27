@@ -63,7 +63,7 @@ async function updateOrganizer(organizerID, updateFields) {
     try {
         return await withOracleDB(async (connection) => {
             const setParts = Object.keys(updateFields).map((key) => `${key} = :${key}`);
-            const sqlQuery = `UPDATE ORGANIZER SET ${setParts.join(', ')} WHERE OrganizerID = :OrganizerID`;
+            const sqlQuery = `UPDATE ORGANIZER SET ${setParts.join(', ')} WHERE OrganizerID = :organizerID`;
             const bindParams = { ...updateFields, OrganizerID: organizerID };
             const result = await connection.execute(sqlQuery, bindParams, { autoCommit: true });
 
@@ -78,7 +78,7 @@ async function updateOrganizer(organizerID, updateFields) {
 async function deleteOrganizer(organizerID) {
     try {
         return await withOracleDB(async (connection) => {
-            const sqlQuery = 'DELETE FROM ORGANIZER WHERE OrganizerID = :OrganizerID';
+            const sqlQuery = 'DELETE FROM ORGANIZER WHERE OrganizerID = :organizerID';
             const result = await connection.execute(sqlQuery, [organizerID], { autoCommit: true });
             return result;
         });
