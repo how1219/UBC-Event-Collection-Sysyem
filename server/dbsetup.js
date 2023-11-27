@@ -95,7 +95,7 @@ async function setupDatabase() {
               SponsorPhoneNo CHAR(10),
               SponsorshipType VARCHAR(255),
               EstimatedValue INTEGER,
-              PRIMARY KEY (EventID, SponsorName, SponsorPhoneNo),
+              PRIMARY KEY (EventID, SponsorName, SponsorshipType),
               FOREIGN KEY (EventID) REFERENCES EVENT(EventID),
               FOREIGN KEY (SponsorName, SponsorPhoneNo) REFERENCES SPONSOR(SponsorName, SponsorPhoneNo)
         )`

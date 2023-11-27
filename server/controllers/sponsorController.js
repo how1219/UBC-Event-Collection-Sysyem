@@ -10,6 +10,15 @@ async function getAllSponsors(req, res) {
     }
 }
 
+async function getSponsorsWhoSupportedAllTypes(req, res) {
+    try {
+        const sponsors = await SponsorModel.getSponsorsWhoSupportedAllTypes();
+        res.status(200).json(sponsors);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching sponsors', error });
+    }
+}
+
 async function addSponsorController(req, res) {
     try {
         const result = await SponsorModel.addSponsor(req.body);
@@ -54,4 +63,4 @@ async function deleteSponsorController(req, res) {
 
 
 
-module.exports = {getAllSponsors, addSponsorController, updateSponsorController, deleteSponsorController};
+module.exports = {getAllSponsors, addSponsorController, updateSponsorController, deleteSponsorController, getSponsorsWhoSupportedAllTypes};

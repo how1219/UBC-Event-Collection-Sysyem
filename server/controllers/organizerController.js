@@ -10,6 +10,36 @@ async function getAllOrganizers(req, res) {
     }
 }
 
+async function getTotalEventsByOrganizers(req, res) {
+    try {
+        const organizers = await OrganizerModel.getTotalEventsByOrganizers();
+        res.status(200).json({ data: organizers });
+    } catch (error) {
+        console.error('Error in getTotalEventsByOrganizers controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+async function getHighestAverageRating(req, res) {
+    try {
+        const highestRating = await OrganizerModel.getHighestAverageRating();
+        res.status(200).json(highestRating);
+    } catch (error) {
+        console.error('Error in getHighestAverageRating controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+async function getOrganizerContactDetail(req, res) {
+    try {
+        const contactDetail = await OrganizerModel.getOrganizerContactDetail();
+        res.status(200).json(contactDetail);
+    } catch (error) {
+        console.error('Error in getOrganizerContactDetail controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 async function addOrganizerController(req, res) {
   const organizerDetails = req.body;
   const result = await OrganizerModel.addOrganizer(organizerDetails);
@@ -52,4 +82,5 @@ async function deleteOrganizerController(req, res) {
 
 
 
-module.exports = {getAllOrganizers, addOrganizerController, updateOrganizerController, deleteOrganizerController};
+module.exports = {getAllOrganizers, addOrganizerController, updateOrganizerController, deleteOrganizerController, getTotalEventsByOrganizers,
+getHighestAverageRating, getOrganizerContactDetail};

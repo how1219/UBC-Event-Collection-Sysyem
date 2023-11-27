@@ -15,4 +15,13 @@ router.put('/organizer/:id', OrganizerController.updateOrganizerController);
 // DELETE route for deleting an existing organizer
 router.delete('/organizer/:id', OrganizerController.deleteOrganizerController);
 
+// Get the total number of events hosted by each organizer
+router.get('/organizers/total-events', OrganizerController.getTotalEventsByOrganizers);
+
+// Get the highest average rating among all organizers
+router.get('/organizers/highest-average-rating', OrganizerController.getHighestAverageRating);
+
+// Get all organizer contact detail
+router.get('/organizers/contact-detail', OrganizerController.getOrganizerContactDetail);
+
 module.exports = router;

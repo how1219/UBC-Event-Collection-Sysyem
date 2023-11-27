@@ -39,6 +39,39 @@ async function withOracleDB(action) {
         });
     }
 
+async function getSponsorsWhoSupportedAllTypes() {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT S.SponsorName
+            FROM SPONSOR S
+            WHERE NOT EXISTS (
+                SELECT DISTINCT SS1.SponsorshipType
+                FROM SPONSOR_SUPPORT SS1
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM SPONSOR_SUPPORT SS2
+                    WHERE SS2.SponsorName = S.SponsorName
+                    AND SS2.SponsorPhoneNo = S.SponsorPhoneNo
+                    AND SS2.SponsorshipType = SS1.SponsorshipType
+                )
+            )
+        `;
+
+        console.log("Executing query:", query);
+        const result = await connection.execute(query);
+
+        console.log("Query result:", result);
+        return result.rows.map(row => {
+            const [SponsorName] = row;
+            return { SponsorName };
+        });
+    }).catch(error => {
+        console.error('Error fetching sponsors who supported all types:', error);
+        return [];
+    });
+}
+
+
     async function addSponsor(sponsorDetails) {
         try {
             const result = await withOracleDB(async (connection) => {
@@ -94,4 +127,4 @@ async function withOracleDB(action) {
 
 
 
-    module.exports = {getAllSponsors, addSponsor, updateSponsor, deleteSponsor};
+    module.exports = {getAllSponsors, addSponsor, updateSponsor, deleteSponsor, getSponsorsWhoSupportedAllTypes};

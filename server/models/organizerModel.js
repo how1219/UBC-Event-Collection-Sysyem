@@ -40,6 +40,66 @@ async function getAllOrganizers() {
     });
 }
 
+async function getTotalEventsByOrganizers() {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT O.OrganizerID, O.OrganizerName, COUNT(E.EventID) AS TotalEventsHosted
+            FROM ORGANIZER O
+            LEFT JOIN EVENT E ON O.OrganizerID = E.OrganizerID
+            GROUP BY O.OrganizerID, O.OrganizerName
+        `;
+        const result = await connection.execute(query);
+        return result.rows.map(row => {
+            const [OrganizerID, OrganizerName, TotalEvents] = row;
+            return { OrganizerID, OrganizerName, TotalEvents };
+        });
+    }).catch(error => {
+        console.error('Error fetching total events by organizers:', error);
+        return [];
+    });
+}
+
+async function getHighestAverageRating() {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT MAX(OrganizerRatings.AverageRating) AS HighestAverageRating
+            FROM (
+                SELECT
+                    O.OrganizerID,
+                    O.OrganizerName,
+                    AVG(F.Rating) AS AverageRating
+                FROM ORGANIZER O
+                LEFT JOIN EVENT E ON O.OrganizerID = E.OrganizerID
+                LEFT JOIN FEEDBACK F ON E.EventID = F.EventID
+                GROUP BY O.OrganizerID, O.OrganizerName
+            ) OrganizerRatings
+        `;
+        const result = await connection.execute(query);
+        const [highestAverageRating] = result.rows[0];
+        return { highestAverageRating };
+    }).catch(error => {
+        console.error('Error fetching highest average rating:', error);
+        return null;
+    });
+}
+
+async function getOrganizerContactDetail() {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT OrganizerName, OrganizerEmail, OrganizerPhoneNo
+            FROM ORGANIZER
+        `;
+        const result = await connection.execute(query);
+        return result.rows.map(row => {
+            const [OrganizerName, OrganizerEmail, OrganizerPhoneNo] = row;
+            return { OrganizerName, OrganizerEmail, OrganizerPhoneNo };
+        });
+    }).catch(error => {
+        console.error('Error fetching organizer details by organizers:', error);
+        return [];
+    });
+}
+
 async function addOrganizer(organizerDetails) {
   try {
     const result = await withOracleDB(async (connection) => {
@@ -99,4 +159,6 @@ async function deleteOrganizer(organizerID) {
 
 
 
-module.exports = {getAllOrganizers, addOrganizer, updateOrganizer, deleteOrganizer};
+
+module.exports = {getAllOrganizers, addOrganizer, updateOrganizer, deleteOrganizer, getTotalEventsByOrganizers,
+getHighestAverageRating, getOrganizerContactDetail};

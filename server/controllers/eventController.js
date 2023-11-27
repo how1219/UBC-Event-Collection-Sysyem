@@ -10,6 +10,17 @@ async function getAllEvents(req, res) {
     }
 }
 
+async function getEventSummaries(req, res) {
+    try {
+        const filters = req.query;
+        const eventSummaries = await EventsModel.getEventSummaries(filters);
+        res.status(200).json({ data: eventSummaries });
+    } catch (error) {
+        console.error('Error in getEventSummaries controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 async function addEventController(req, res) {
   const eventDetails = req.body;
   const result = await EventsModel.addEvent(eventDetails);
@@ -45,4 +56,4 @@ async function deleteEventController(req, res) {
 
 
 
-module.exports = { getAllEvents, addEventController, updateEventController, deleteEventController};
+module.exports = { getAllEvents, addEventController, updateEventController, deleteEventController, getEventSummaries};

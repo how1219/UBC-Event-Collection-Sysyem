@@ -14,5 +14,7 @@ router.put('/sponsor/:sponsorName/:sponsorPhoneNo', SponsorController.updateSpon
 // DELETE route for deleting an existing team member by MemberName and MemberPhoneNo
 router.delete('/sponsor/:sponsorName/:sponsorPhoneNo', SponsorController.deleteSponsorController);
 
+router.get('/sponsors/all-types-supported', SponsorController.getSponsorsWhoSupportedAllTypes);
+
 
 module.exports = router;
