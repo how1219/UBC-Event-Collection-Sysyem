@@ -7,6 +7,7 @@ const feedBackRoutes = require('./server/routes/feedbackRoutes');
 const sponsorRoutes = require('./server/routes/sponsorRoutes');
 const photoRoutes = require('./server/routes/photoRoutes');
 const participantRoutes = require('./server/routes/participantRoutes');
+const databaseRoutes = require('./server/routes/databaseRoutes');
 
 // Load environment variables from .env file
 // Ensure your .env file has the required database credentials.
@@ -28,6 +29,7 @@ app.use('/', feedBackRoutes);
 app.use('/', sponsorRoutes);
 app.use('/', photoRoutes);
 app.use('/', participantRoutes);
+app.use('/', databaseRoutes);
 
 // ----------------------------------------------------------
 // setup the database schema and start the server

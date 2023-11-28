@@ -74,7 +74,6 @@ async function getEventSummaries(filters) {
             query += ` HAVING ` + havingConditions.join(' AND ');
         }
 
-        console.log("Filters:", filters);
         console.log("SQL Query:", query);
 
         const result = await connection.execute(query);
