@@ -18,4 +18,12 @@ router.put('/event/:id', EventsController.updateEventController);
 router.delete('/event/:id', EventsController.deleteEventController);
 
 
+router.get('/event/high-rated-detailed/:ratingThreshold', EventsController.getHighRatedEventsDetailed);
+
+//GET events by organizer nnd event name
+router.get('/event/search', EventsController.getEventsByOrganizerAndName);
+
+
+
+
 module.exports = router;

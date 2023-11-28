@@ -93,6 +93,68 @@ async function getEventSummaries(filters) {
     });
 }
 
+async function getHighRatedEventsDetailed(ratingThreshold) {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT E.*, AVG(F.Rating) AS AverageRating
+            FROM EVENT E
+            JOIN FEEDBACK F ON E.EventID = F.EventID
+            GROUP BY E.EventID, E.OrganizerID, E.EventDate, E.Expense, E.EventTime, E.EventName
+            HAVING AVG(F.Rating) > :ratingThreshold
+        `;
+        console.log(query);
+        const result = await connection.execute(query, [ratingThreshold]);
+        return result.rows.map(row => {
+            const [EventID, OrganizerID, EventDate, Expense, EventTime, EventName, AverageRating] = row;
+            return {
+                EventID,
+                OrganizerID,
+                EventDate: EventDate ? new Date(EventDate).toISOString() : null,
+                Expense,
+                EventTime,
+                EventName,
+                AverageRating: AverageRating ? parseFloat(AverageRating).toFixed(1) : null
+            };
+        });
+    }).catch(error => {
+        console.error('Error fetching high rated events:', error);
+        return [];
+    });
+}
+
+async function getEventsByOrganizerAndName(organizerId, eventName) {
+    return await withOracleDB(async (connection) => {
+        let query = `SELECT * FROM EVENT WHERE 1=1`;
+        const params = {};
+
+        if (organizerId) {
+            query += ` AND OrganizerID = :organizerId`;
+            params.organizerId = organizerId;
+        }
+        if (eventName) {
+            query += ` AND UPPER(EventName) LIKE UPPER(:eventName)`;
+            params.eventName = `%${eventName}%`;
+        }
+
+        const result = await connection.execute(query, params);
+        return result.rows.map(row => {
+            const [EventID, OrganizerID, EventDate, Expense, EventTime, EventName] = row;
+            return {
+                EventID,
+                OrganizerID,
+                EventDate: new Date(EventDate).toISOString(),
+                Expense,
+                EventTime,
+                EventName
+            };
+        });
+    }).catch(error => {
+        console.error('Error fetching events:', error);
+        return [];
+    });
+}
+
+
 async function addEvent(eventDetails) {
   try {
     const result = await withOracleDB(async (connection) => {
@@ -145,4 +207,4 @@ async function deleteEvent(eventID) {
 
 
 
-module.exports = { getAllEvents, addEvent, updateEvent, deleteEvent, getEventSummaries};
+module.exports = { getAllEvents, addEvent, updateEvent, deleteEvent, getEventSummaries, getHighRatedEventsDetailed, getEventsByOrganizerAndName};

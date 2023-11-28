@@ -21,6 +21,28 @@ async function getEventSummaries(req, res) {
     }
 }
 
+async function getHighRatedEventsDetailed(req, res) {
+    try {
+        const ratingThreshold = parseFloat(req.params.ratingThreshold);
+        const highRatedEvents = await EventsModel.getHighRatedEventsDetailed(ratingThreshold);
+        res.json({ data: highRatedEvents });
+    } catch (error) {
+        res.status(500).send('Error getting detailed high rated events');
+    }
+}
+
+async function getEventsByOrganizerAndName(req, res) {
+    try {
+        const organizerId = req.query.organizerId ? parseInt(req.query.organizerId) : null;
+        const eventName = req.query.eventName || null;
+        const events = await EventsModel.getEventsByOrganizerAndName(organizerId, eventName);
+        res.json({ data: events });
+    } catch (error) {
+        console.error('Error in controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 async function addEventController(req, res) {
   const eventDetails = req.body;
   const result = await EventsModel.addEvent(eventDetails);
@@ -56,4 +78,5 @@ async function deleteEventController(req, res) {
 
 
 
-module.exports = { getAllEvents, addEventController, updateEventController, deleteEventController, getEventSummaries};
+module.exports = { getAllEvents, addEventController, updateEventController, deleteEventController, getEventSummaries,
+getHighRatedEventsDetailed, getEventsByOrganizerAndName};
