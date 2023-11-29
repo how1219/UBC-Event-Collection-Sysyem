@@ -154,25 +154,35 @@ async function getEventsByOrganizerAndName(organizerId, eventName) {
     });
 }
 
-
 async function addEvent(eventDetails) {
-  try {
-    const result = await withOracleDB(async (connection) => {
-      const { EventID, OrganizerID, EventDate, Expense, EventTime, EventName } = eventDetails;
-      const result = await connection.execute(
-        `INSERT INTO EVENT (EventID, OrganizerID, EventDate, Expense, EventTime, EventName)
-         VALUES (:EventID, :OrganizerID, TO_TIMESTAMP(:EventDate, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :Expense, :EventTime, :EventName)`,
-        [EventID, OrganizerID, EventDate, Expense, EventTime, EventName],
-        { autoCommit: true }
-      );
-      return result;
-    });
-    return { success: true, result };
-  } catch (error) {
-    console.error('Error adding event:', error);
-    return { success: false, error };
-  }
+    try {
+        return await withOracleDB(async (connection) => {
+            const { EventID, OrganizerID, EventDate, Expense, EventTime, EventName } = eventDetails;
+
+            // Check if OrganizerID exists
+            const checkOrganizer = await connection.execute(
+                `SELECT COUNT(*) AS count FROM ORGANIZER WHERE OrganizerID = :OrganizerID`,
+                [OrganizerID]
+            );
+            if (checkOrganizer.rows[0][0] === 0) {
+                // OrganizerID does not exist
+                return { success: false, error: 'OrganizerID does not exist.' };
+            }
+
+            await connection.execute(
+                `INSERT INTO EVENT (EventID, OrganizerID, EventDate, Expense, EventTime, EventName)
+                 VALUES (:EventID, :OrganizerID, TO_TIMESTAMP(:EventDate, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :Expense, :EventTime, :EventName)`,
+                [EventID, OrganizerID, EventDate, Expense, EventTime, EventName],
+                { autoCommit: true }
+            );
+            return { success: true };
+        });
+    } catch (error) {
+        console.error('Error adding event:', error);
+        return { success: false, error: error.message };
+    }
 }
+
 
 // For EventDate, using "YYYY-MM-DD HH24:MI:SS" format
 async function updateEvent(eventID, updateFields) {

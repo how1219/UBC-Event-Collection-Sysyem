@@ -46,10 +46,10 @@ async function getEventsByOrganizerAndName(req, res) {
 async function addEventController(req, res) {
   const eventDetails = req.body;
   const result = await EventsModel.addEvent(eventDetails);
-  if (result.success) {
+  if (result && result.success) {
      res.status(201).json({message: 'Event created successfully.'});
   } else {
-    res.status(500).json(result.error);
+    res.status(500).json({ error: result ? result.error : 'Unknown error' });
   }
 }
 
