@@ -159,6 +159,31 @@ async function addEvent(eventDetails) {
         return await withOracleDB(async (connection) => {
             const { EventID, OrganizerID, EventDate, Expense, EventTime, EventName } = eventDetails;
 
+            // Input validation
+            if (!EventID || !OrganizerID || !EventDate || !EventTime || !EventName) {
+                return { success: false, error: 'Missing required event details.' };
+            }
+            if (!Number.isInteger(EventID) || !Number.isInteger(OrganizerID)) {
+                return { success: false, error: 'Invalid EventID or OrganizerID. Must be integers.' };
+            }
+            if (typeof Expense !== 'number') {
+                return { success: false, error: 'Invalid Expense. Must be a number.' };
+            }
+            // Validate EventDate (format: YYYY-MM-DD)
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(EventDate)) {
+                return { success: false, error: 'Invalid EventDate format. Expected format: YYYY-MM-DD.' };
+            }
+            // Validate EventTime (format: HH:MM)
+            const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+            if (!timeRegex.test(EventTime)) {
+                return { success: false, error: 'Invalid EventTime format. Expected format: HH:MM.' };
+            }
+            // EventName length validation (max 50 characters)
+            if (EventName.length > 50) {
+                return { success: false, error: 'EventName too long. Maximum 50 characters allowed.' };
+            }
+
             // Check if OrganizerID exists
             const checkOrganizer = await connection.execute(
                 `SELECT COUNT(*) AS count FROM ORGANIZER WHERE OrganizerID = :OrganizerID`,
@@ -169,6 +194,16 @@ async function addEvent(eventDetails) {
                 return { success: false, error: 'OrganizerID does not exist.' };
             }
 
+            // Check for duplicate EventID
+            const checkEvent = await connection.execute(
+                `SELECT COUNT(*) AS count FROM EVENT WHERE EventID = :EventID`,
+                [EventID]
+            );
+            if (checkEvent.rows[0][0] > 0) {
+                return { success: false, error: 'Duplicate EventID. Event already exists.' };
+            }
+
+            // Parameterized queries ensure that user input is treated strictly as data and not as part of the SQL command.
             await connection.execute(
                 `INSERT INTO EVENT (EventID, OrganizerID, EventDate, Expense, EventTime, EventName)
                  VALUES (:EventID, :OrganizerID, TO_TIMESTAMP(:EventDate, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :Expense, :EventTime, :EventName)`,
@@ -184,11 +219,60 @@ async function addEvent(eventDetails) {
 }
 
 
-// For EventDate, using "YYYY-MM-DD HH24:MI:SS" format
+// For EventDate, using "YYYY-MM-DD" format
 async function updateEvent(eventID, updateFields) {
     try {
+        // Check if there are fields to update
+        if (Object.keys(updateFields).length === 0) {
+            throw new Error('No update fields provided.');
+        }
+
+        // Validate and process each field
+        for (const key in updateFields) {
+          if (key !== 'EventDate') {
+            switch (key) {
+                case 'OrganizerID':
+                    if (!Number.isInteger(updateFields.OrganizerID)) {
+                        throw new Error('Invalid OrganizerID. Must be an integer.');
+                    }
+                    break;
+                case 'EventDate':
+                    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                    if (!dateRegex.test(updateFields.EventDate)) {
+                        throw new Error('Invalid EventDate format. Expected format: YYYY-MM-DD.');
+                    }
+                    // Convert the EventDate to a timestamp format
+                    updateFields.EventDate = new Date(updateFields.EventDate).TO_TIMESTAMP;
+                    break;
+                case 'Expense':
+                    if (typeof updateFields.Expense !== 'number') {
+                        throw new Error('Invalid Expense. Must be a number.');
+                    }
+                    break;
+                case 'EventTime':
+                    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+                    if (!timeRegex.test(updateFields.EventTime)) {
+                        throw new Error('Invalid EventTime format. Expected format: HH:MM.');
+                    }
+                    break;
+                case 'EventName':
+                    if (typeof updateFields.EventName !== 'string' || updateFields.EventName.length > 50) {
+                        throw new Error('Invalid EventName. Must be a string with a maximum of 50 characters.');
+                    }
+                    break;
+                default:
+                    throw new Error(`Invalid field: ${key}`);
+            }
+          }
+        }
         return await withOracleDB(async (connection) => {
-            const setParts = Object.keys(updateFields).map((key) => `${key} = :${key}`);
+            const setParts = Object.keys(updateFields).map((key) => {
+                if (key === 'EventDate') {
+                    return `${key} = TO_TIMESTAMP(:${key}, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"')`;
+                } else {
+                    return `${key} = :${key}`;
+                }
+            });
             const sqlQuery = `UPDATE EVENT SET ${setParts.join(', ')} WHERE EventID = :EventID`;
             const bindParams = { ...updateFields, EventID: eventID };
             const result = await connection.execute(sqlQuery, bindParams, { autoCommit: true });
