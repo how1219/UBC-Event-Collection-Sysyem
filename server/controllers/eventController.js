@@ -21,6 +21,22 @@ async function getEventSummaries(req, res) {
     }
 }
 
+
+async function getEventByIdController(req, res) {
+    try {
+        const eventID = req.params.id;
+        const event = await EventsModel.getEventById(eventID);
+        if (event) {
+            res.status(200).json(event);
+        } else {
+            res.status(404).json({ message: "Event not found" });
+        }
+    } catch (error) {
+        console.error('Error in getEventById controller:', error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 async function getHighRatedEventsDetailed(req, res) {
     try {
         const ratingThreshold = parseFloat(req.params.ratingThreshold);
@@ -57,46 +73,48 @@ async function getEventsByOrganizerAndName(req, res) {
 }
 
 async function addEventController(req, res) {
-  const eventDetails = req.body;
-  const result = await EventsModel.addEvent(eventDetails);
-  if (result && result.success) {
-     res.status(201).json({message: 'Event created successfully.'});
-  } else {
-    res.status(500).json({ error: result ? result.error : 'Unknown error' });
-  }
+    const eventDetails = req.body;
+    const result = await EventsModel.addEvent(eventDetails);
+    if (result && result.success) {
+        res.status(201).json({ message: 'Event created successfully.' });
+    } else {
+        res.status(500).json({ error: result ? result.error : 'Unknown error' });
+    }
 }
 
 async function updateEventController(req, res) {
-  const eventID = req.params.id;
-  const updateFields = req.body;
-  try {
-      const result = await EventsModel.updateEvent(eventID, updateFields);
+    const eventID = req.params.id;
+    const updateFields = req.body;
+    try {
+        const result = await EventsModel.updateEvent(eventID, updateFields);
 
-      if (result && result.rowsAffected > 0) {
-          res.status(200).json({ message: 'Event updated successfully.' });
-      } else {
-          // Handle case where no rows are affected
-          res.status(404).json({ error: 'No event found with the given ID or no changes made.' });
-      }
-  } catch (error) {
-      // Handle errors from updateEvent function
-      console.error('Error in updateEventController:', error);
-      res.status(500).json({ error: error.message });
-  }
+        if (result && result.rowsAffected > 0) {
+            res.status(200).json({ message: 'Event updated successfully.' });
+        } else {
+            // Handle case where no rows are affected
+            res.status(404).json({ error: 'No event found with the given ID or no changes made.' });
+        }
+    } catch (error) {
+        // Handle errors from updateEvent function
+        console.error('Error in updateEventController:', error);
+        res.status(500).json({ error: error.message });
+    }
 }
 
 async function deleteEventController(req, res) {
-  const eventID = req.params.id;
-  const result = await EventsModel.deleteEvent(eventID);
-  console.log(result);
-  if (result.rowsAffected > 0) {
-    res.status(201).json({message: 'Event deleted successfully.'});
-  } else {
-    res.status(500).json(result.error);
-  }
+    const eventID = req.params.id;
+    const result = await EventsModel.deleteEvent(eventID);
+    console.log(result);
+    if (result.rowsAffected > 0) {
+        res.status(201).json({ message: 'Event deleted successfully.' });
+    } else {
+        res.status(500).json(result.error);
+    }
 }
 
 
 
-module.exports = { getAllEvents, addEventController, updateEventController, deleteEventController, getEventSummaries,
-getHighRatedEventsDetailed, getEventsByOrganizerAndName};
+module.exports = {
+    getAllEvents, addEventController, updateEventController, deleteEventController, getEventSummaries,
+    getHighRatedEventsDetailed, getEventsByOrganizerAndName, getEventByIdController
+};

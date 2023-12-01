@@ -5,6 +5,9 @@ const EventsController = require('../controllers/eventController');
 // Existing GET route for fetching all events
 router.get('/event', EventsController.getAllEvents);
 
+// Existing GET route for fetching event detail by id
+router.get('/event/:id', EventsController.getEventByIdController);
+
 // GET all event summaries
 router.get('/eventSummaries', EventsController.getEventSummaries);
 

@@ -25,6 +25,23 @@
                 <button type="submit">Create Event</button>
             </form>
             <div id="insertResultMsg"></div> <!-- Element to display the result message -->
+
+
+            <div id="custom-table-section">
+                <h2>Projection</h2>
+                <p>Select a table and attributes to view:</p>
+                <select id="table-select">
+                    <!-- Options populated dynamically -->
+                </select>
+                <select id="attribute-select" multiple>
+                    <!-- Options populated dynamically based on selected table -->
+                </select>
+                <button id="view-custom-table-button">View Table</button>
+                <div id="custom-table-result">
+                    <!-- Custom table data will be displayed here -->
+                </div>
+            </div>
+
         </div>
 
 
@@ -54,6 +71,39 @@
                     <span id="highest-avg-rating"></span>
                 </div>
             </div>
+
+            <!-- event-organizer- Section -->
+            <div id="event-organizer-section">
+                <p>Calculate the total number of events hosted by each organizer</p>
+                <button id="calculate-event-organizer-button">Calculate</button>
+                <ul id="event-organizer-list"> </ul>
+            </div>
+
+            <!-- event-rating-Section -->
+            <div id="high-rated-events-section">
+                <p>Find events with an average rating higher than:</p>
+                <select id="rating-threshold">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <button id="find-high-rated-events-button">Find Events</button>
+                <ul id="high-rated-events-list"></ul>
+            </div>
+
+            <!-- event-search-Section -->
+            <div id="event-search-section">
+                <p>Get events by Organizer ID and partial match on Event Name:</p>
+                <input type="number" id="organizer-id-input" placeholder="Organizer ID">
+                <input type="text" id="event-name-input" placeholder="Partial Event Name">
+                <button id="search-events-button">Search Events</button>
+                <ul id="searched-events-list"></ul>
+            </div>
+
+
         </div>
 
 
@@ -64,6 +114,7 @@
         <div class="modal-content">
             <span class="close-button">×</span>
             <form id="update-event-form">
+                <input type="hidden" id="update-event-id">
                 <input type="number" id="update-organizer-id" placeholder="Organizer ID">
                 <input type="date" id="update-event-date" placeholder="Event Date">
                 <input type="text" id="update-event-time" placeholder="Event Time (HH:MM)">

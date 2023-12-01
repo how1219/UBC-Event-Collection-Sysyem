@@ -42,6 +42,36 @@ async function getAllEvents() {
     });
 }
 
+
+async function getEventById(eventId) {
+    try {
+        return await withOracleDB(async (connection) => {
+            const sqlQuery = 'SELECT * FROM EVENT WHERE EventID = :EventID';
+            const binds = { EventID: eventId };
+            const result = await connection.execute(sqlQuery, binds);
+
+            if (result.rows.length === 0) {
+                return null;
+            }
+
+            const eventRow = result.rows[0];
+            return {
+                EventID: eventRow[0],
+                OrganizerID: eventRow[1],
+                EventDate: eventRow[2].toISOString(),
+                Expense: eventRow[3],
+                EventTime: eventRow[4],
+                EventName: eventRow[5]
+            };
+        });
+    } catch (error) {
+        console.error('Error getting event by ID:', error);
+        throw error;
+    }
+}
+
+
+
 async function getEventSummaries(filters) {
     return await withOracleDB(async (connection) => {
         let query = `
@@ -55,13 +85,13 @@ async function getEventSummaries(filters) {
 
         // filters
         if (filters.minAverageRating) {
-           havingConditions.push(`AVG(F.Rating) >= ${filters.minAverageRating}`);
+            havingConditions.push(`AVG(F.Rating) >= ${filters.minAverageRating}`);
         }
         if (filters.organizerId) {
-           conditions.push(`E.OrganizerID = ${filters.organizerId}`);
+            conditions.push(`E.OrganizerID = ${filters.organizerId}`);
         }
         if (filters.eventName) {
-           conditions.push(`UPPER(E.EventName) LIKE UPPER('%${filters.eventName}%')`);
+            conditions.push(`UPPER(E.EventName) LIKE UPPER('%${filters.eventName}%')`);
         }
 
         if (conditions.length > 0) {
@@ -86,8 +116,8 @@ async function getEventSummaries(filters) {
                 EventTime,
                 OrganizerName,
                 AverageRating: AverageRating ? parseFloat(AverageRating).toFixed(1) : null
-                    };
-                });
+            };
+        });
     }).catch(() => {
         return [];
     });
@@ -229,41 +259,41 @@ async function updateEvent(eventID, updateFields) {
 
         // Validate and process each field
         for (const key in updateFields) {
-          if (key !== 'EventDate') {
-            switch (key) {
-                case 'OrganizerID':
-                    if (!Number.isInteger(updateFields.OrganizerID)) {
-                        throw new Error('Invalid OrganizerID. Must be an integer.');
-                    }
-                    break;
-                case 'EventDate':
-                    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-                    if (!dateRegex.test(updateFields.EventDate)) {
-                        throw new Error('Invalid EventDate format. Expected format: YYYY-MM-DD.');
-                    }
-                    // Convert the EventDate to a timestamp format
-                    updateFields.EventDate = new Date(updateFields.EventDate).TO_TIMESTAMP;
-                    break;
-                case 'Expense':
-                    if (typeof updateFields.Expense !== 'number') {
-                        throw new Error('Invalid Expense. Must be a number.');
-                    }
-                    break;
-                case 'EventTime':
-                    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-                    if (!timeRegex.test(updateFields.EventTime)) {
-                        throw new Error('Invalid EventTime format. Expected format: HH:MM.');
-                    }
-                    break;
-                case 'EventName':
-                    if (typeof updateFields.EventName !== 'string' || updateFields.EventName.length > 50) {
-                        throw new Error('Invalid EventName. Must be a string with a maximum of 50 characters.');
-                    }
-                    break;
-                default:
-                    throw new Error(`Invalid field: ${key}`);
+            if (key !== 'EventDate') {
+                switch (key) {
+                    case 'OrganizerID':
+                        if (!Number.isInteger(updateFields.OrganizerID)) {
+                            throw new Error('Invalid OrganizerID. Must be an integer.');
+                        }
+                        break;
+                    case 'EventDate':
+                        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                        if (!dateRegex.test(updateFields.EventDate)) {
+                            throw new Error('Invalid EventDate format. Expected format: YYYY-MM-DD.');
+                        }
+                        // Convert the EventDate to a timestamp format
+                        updateFields.EventDate = new Date(updateFields.EventDate).TO_TIMESTAMP;
+                        break;
+                    case 'Expense':
+                        if (typeof updateFields.Expense !== 'number') {
+                            throw new Error('Invalid Expense. Must be a number.');
+                        }
+                        break;
+                    case 'EventTime':
+                        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+                        if (!timeRegex.test(updateFields.EventTime)) {
+                            throw new Error('Invalid EventTime format. Expected format: HH:MM.');
+                        }
+                        break;
+                    case 'EventName':
+                        if (typeof updateFields.EventName !== 'string' || updateFields.EventName.length > 50) {
+                            throw new Error('Invalid EventName. Must be a string with a maximum of 50 characters.');
+                        }
+                        break;
+                    default:
+                        throw new Error(`Invalid field: ${key}`);
+                }
             }
-          }
         }
         return await withOracleDB(async (connection) => {
             const setParts = Object.keys(updateFields).map((key) => {
@@ -301,4 +331,7 @@ async function deleteEvent(eventID) {
 
 
 
-module.exports = { getAllEvents, addEvent, updateEvent, deleteEvent, getEventSummaries, getHighRatedEventsDetailed, getEventsByOrganizerAndName};
+module.exports = {
+    getAllEvents, addEvent, updateEvent, deleteEvent, getEventSummaries, getHighRatedEventsDetailed, getEventsByOrganizerAndName,
+    getEventById
+};
