@@ -159,13 +159,14 @@ async function getEventsByOrganizerAndName(organizerId, eventName) {
 
         if (organizerId) {
             query += ` AND OrganizerID = :organizerId`;
-            params.organizerId = organizerId;
+            params.organizerId = parseInt(organizerId);
         }
         if (eventName) {
             query += ` AND UPPER(EventName) LIKE UPPER(:eventName)`;
             params.eventName = `%${eventName}%`;
         }
 
+        console.log(query);
         const result = await connection.execute(query, params);
         return result.rows.map(row => {
             const [EventID, OrganizerID, EventDate, Expense, EventTime, EventName] = row;
@@ -306,6 +307,7 @@ async function updateEvent(eventID, updateFields) {
             const sqlQuery = `UPDATE EVENT SET ${setParts.join(', ')} WHERE EventID = :EventID`;
             const bindParams = { ...updateFields, EventID: eventID };
             const result = await connection.execute(sqlQuery, bindParams, { autoCommit: true });
+            console.log(sqlQuery);
 
             return result;
         });

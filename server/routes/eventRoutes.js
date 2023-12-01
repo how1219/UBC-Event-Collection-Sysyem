@@ -5,6 +5,9 @@ const EventsController = require('../controllers/eventController');
 // Existing GET route for fetching all events
 router.get('/event', EventsController.getAllEvents);
 
+//GET events by organizer nnd event name
+router.get('/event/search', EventsController.getEventsByOrganizerAndName);
+
 // Existing GET route for fetching event detail by id
 router.get('/event/:id', EventsController.getEventByIdController);
 
@@ -22,9 +25,6 @@ router.delete('/event/:id', EventsController.deleteEventController);
 
 
 router.get('/event/high-rated-detailed/:ratingThreshold', EventsController.getHighRatedEventsDetailed);
-
-//GET events by organizer nnd event name
-router.get('/event/search', EventsController.getEventsByOrganizerAndName);
 
 
 
