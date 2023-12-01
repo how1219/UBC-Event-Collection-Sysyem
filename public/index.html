@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Simple Example</title>
+    <meta charset="UTF-8">
+    <title>Event Management</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<h1>Hello, this is a simple HTML file!</h1>
-<p>This is an example HTML file for demonstration purposes.</p>
+    <h1 class="main-title">UBC Event Collection System</h1>
+
+    <div class="flex-container">
+
+        <!-- Add Event section -->
+        <div id="add-event-container">
+            <h2>Add Event</h2>
+            <form id="add-event-form">
+                <input type="number" id="event-id" placeholder="Event ID" required>
+                <input type="number" id="organizer-id" placeholder="Organizer ID" required>
+                <input type="date" id="event-date" placeholder="Event Date" required>
+                <input type="text" id="event-time" placeholder="Event Time (HH:MM)" required>
+                <input type="number" id="expense" placeholder="Expense" required>
+                <input type="text" id="event-name" placeholder="Event Name" required>
+                <button type="submit">Create Event</button>
+            </form>
+            <div id="insertResultMsg"></div> <!-- Element to display the result message -->
+        </div>
+
+
+        <!-- Event List section -->
+        <div id="event-list-container">
+            <h2>Event Summary</h2>
+            <button id="refresh-events">Refresh Events</button>
+            <ul id="event-list-ul">
+            </ul>
+        </div>
+
+        <!--stat section -->
+        <div id="stat-container">
+            <h2>Statistics</h2>
+            <!-- All-Sponsor Section -->
+            <div id="all-sponsor-section">
+                <p>List of sponsors who have supported every type of sponsorship</p>
+                <button id="view-sponsors-button">View Sponsors</button>
+                <ul id="sponsor-list"> </ul>
+            </div>
+
+            <!-- highest avg rating Section -->
+            <div id="high-avg-rating-section">
+                <p>Find the highest average rating among all organizers</p>
+                <button id="calculate-high-avg-button">Calculate</button>
+                <div>
+                    <span id="highest-avg-rating"></span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Update Event Modal -->
+    <div id="update-event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <form id="update-event-form">
+                <input type="number" id="update-organizer-id" placeholder="Organizer ID">
+                <input type="date" id="update-event-date" placeholder="Event Date">
+                <input type="text" id="update-event-time" placeholder="Event Time (HH:MM)">
+                <input type="number" id="update-expense" placeholder="Expense">
+                <input type="text" id="update-event-name" placeholder="Event Name">
+                <button type="submit">Update Event</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script> <!-- Link to your JavaScript file -->
 </body>
+
 </html>
