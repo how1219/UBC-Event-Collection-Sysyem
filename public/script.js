@@ -214,8 +214,11 @@ async function fetchHighestAverageRating() {
         const response = await fetch('/organizers/highest-average-rating');
         const jsonResponse = await response.json();
         const highestAvgRating = jsonResponse.highestAverageRating;
-
-        document.getElementById('highest-avg-rating').textContent = highestAvgRating.toFixed(2);
+        if (highestAvgRating != null){
+            document.getElementById('highest-avg-rating').textContent = highestAvgRating.toFixed(2);
+        } else {
+            document.getElementById('highest-avg-rating').textContent = 'Event with no ratings';
+        }
     } catch (error) {
         console.error('Error fetching highest average rating:', error);
         document.getElementById('highest-avg-rating').textContent = 'Error fetching data';
@@ -247,14 +250,16 @@ async function fetchEventCountOrganizer() {
 
 async function fetchHighRatedEvents() {
     const selectedRating = document.getElementById('rating-threshold').value;
+    const messageElement = document.getElementById('rateResultMsg');
     try {
         const response = await fetch(`/event/high-rated-detailed/${selectedRating}`);
         const jsonResponse = await response.json();
         const events = jsonResponse.data;
         const eventsListContainer = document.getElementById('high-rated-events-list');
         eventsListContainer.innerHTML = '';
-
-        events.forEach(event => {
+        if (events.length === 0) {
+            messageElement.textContent = ("No events found with rating higher than " + selectedRating);
+        } else events.forEach(event => {
             const eventListItem = document.createElement('li');
             eventListItem.innerHTML = `
                 <div><strong>Event ID:</strong> ${event.EventID}</div>
@@ -262,6 +267,7 @@ async function fetchHighRatedEvents() {
                 <div><strong>Average Rating:</strong> ${event.AverageRating}</div>
             `;
             eventsListContainer.appendChild(eventListItem);
+            messageElement.textContent = '';
         });
     } catch (error) {
         console.error('Error fetching high rated events:', error);
